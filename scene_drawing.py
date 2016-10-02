@@ -320,9 +320,9 @@ class Layer (object):
 	
 	def update(self, dt):
 		if (len(self.animations) > 0):
-			for animation_key in self.animations.keys():
+			for animation_key in list(self.animations):
 				#Note: It's possible that animations remove each other while updating
-				if self.animations.has_key(animation_key): 
+				if animation_key in self.animations: 	
 					animation = self.animations[animation_key]
 					animation.update(dt)
 			
