@@ -6,9 +6,12 @@
 # module. Goal and winner messages are animated
 # with layers. 
 
+from __future__ import absolute_import
 from scene import *
+from _scene_types import Rect,Color,Point #see https://github.com/omz/Pythonista-Issues/issues/150
 from sound import *
 from copy import copy
+from six.moves import zip
 
 
 class Player (object):
@@ -47,7 +50,6 @@ class HockeyScene (Scene):
 		gh = self.size.h / 4
 		
 		self.puck_radius = gh / 2.5
-		self.puck = self.centered_puck()
 		# the last time the puck was hit. Used to animate its slow down
 		self.puck_start_t = 0
 		pr = self.puck_radius
@@ -58,13 +60,16 @@ class HockeyScene (Scene):
 		self.red_line = Rect(center - lw / 2, 0, lw, self.size.h)
 		
 		self.red_circle = Rect(w=gh, h=gh)
-		self.red_circle.center(self.bounds.center())
+		
+		self.red_circle.center(*self.bounds.center().as_tuple())
 		
 		self.left_goal = Rect(w=gh, h=gh)
 		self.right_goal = Rect(w=gh, h=gh)
 		self.left_goal.center(0, middle)
 		self.right_goal.center(self.size.w, middle)
 
+		self.puck = self.centered_puck()
+		
 		# when someone reaches 7 goals, save them to show a message
 		self.winner = None 
 
@@ -115,7 +120,7 @@ class HockeyScene (Scene):
 
 	def centered_puck(self):
 		pos = Rect(w=self.puck_radius, h=self.puck_radius)
-		pos.center(self.bounds.center())
+		pos.center(*self.bounds.center().as_tuple())
 		return Puck(pos, self)
 
 
@@ -186,7 +191,7 @@ class HockeyScene (Scene):
 
 		if self.winner is not None:
 			c = Rect()
-			c.center(self.bounds.center())
+			c.center(*self.bounds.center().as_tuple())
 			tint(1, 1, 1)
 			message = "Tap to Play Again"
 			y_offset = self.size.h / 4
@@ -238,3 +243,4 @@ class HockeyScene (Scene):
 
 
 run(HockeyScene(), LANDSCAPE)
+
